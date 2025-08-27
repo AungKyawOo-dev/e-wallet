@@ -22,16 +22,18 @@ public class UserController {
 
     private final IUserService userService;
 
-    @GetMapping("/greeting")
-    public ResponseEntity<String>    greeting() {
-       return ResponseEntity.ok("Hello from User Service");
-    }
-
     @PostMapping
     public ResponseEntity<ResponseDto> createUser(@RequestBody UserRequestDto userRequestDto) {
         log.info("Creating user: {}", userRequestDto);
         UserDto userDto = userService.createUser(userRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(UserConstants.STATUS_201, UserConstants.MESSAGE_201, userDto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto> getUser(@PathVariable Long id) {
+        log.info("Getting user with id: {}", id);
+        UserDto userDto = userService.getUser(id);
+        return ResponseEntity.ok(new ResponseDto(UserConstants.STATUS_200, UserConstants.MESSAGE_200, userDto));
     }
 
 }

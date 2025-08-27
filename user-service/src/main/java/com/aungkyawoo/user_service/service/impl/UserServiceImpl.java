@@ -3,6 +3,7 @@ package com.aungkyawoo.user_service.service.impl;
 import com.aungkyawoo.user_service.dto.UserDto;
 import com.aungkyawoo.user_service.dto.request.UserRequestDto;
 import com.aungkyawoo.user_service.entity.UserEntity;
+import com.aungkyawoo.user_service.exception.ResourceNotFoundException;
 import com.aungkyawoo.user_service.exception.UserAlreadyExistsException;
 import com.aungkyawoo.user_service.mapper.UserMapper;
 import com.aungkyawoo.user_service.repository.UserRepository;
@@ -30,6 +31,12 @@ public class UserServiceImpl implements IUserService {
         }
         user = userRepository.save(user);
         log.info("User created with id: {}", user.getId());
+        return UserMapper.mapToUserDto(user);
+    }
+
+    @Override
+    public UserDto getUser(Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
         return UserMapper.mapToUserDto(user);
     }
 }
