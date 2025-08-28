@@ -10,4 +10,6 @@ public interface IUserService {
     UserDto getUser(Long id);
 
     UserDto updateUser(Long id, @Valid UserRequestDto userRequestDto);
+
+    void deleteUser(Long id);
 }

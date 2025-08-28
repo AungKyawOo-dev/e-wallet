@@ -47,6 +47,14 @@ public class UserServiceImpl implements IUserService {
         user.setFullName(userRequestDto.getFullName());
         user.setPhoneNo(userRequestDto.getPhoneNo());
         user = userRepository.save(user);
+        log.info("User updated with id: {}", id);
         return UserMapper.mapToUserDto(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
+        userRepository.delete(user);
+        log.info("User deleted with id: {}", id);
     }
 }
