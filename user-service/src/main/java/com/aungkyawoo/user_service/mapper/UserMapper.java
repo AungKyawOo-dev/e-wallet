@@ -4,8 +4,17 @@ import com.aungkyawoo.user_service.dto.UserDto;
 import com.aungkyawoo.user_service.dto.request.UserRequestDto;
 import com.aungkyawoo.user_service.entity.UserEntity;
 
+/**
+ * UserMapper
+ * Author: aung kyaw oo
+ */
 public class UserMapper {
 
+    /**
+     * mapToUserEntity
+     * @param userDto UserRequestDto
+     * @return new UserEntity
+     */
     public static UserEntity mapToUserEntity(UserRequestDto userDto) {
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(userDto.getEmail());
@@ -14,6 +23,11 @@ public class UserMapper {
         return userEntity;
     }
 
+    /**
+     * mapToUserDto
+     * @param userEntity UserEntity
+     * @return new UserDto
+     */
     public static UserDto mapToUserDto(UserEntity userEntity) {
         UserDto userDto = new UserDto();
         userDto.setId(userEntity.getId());

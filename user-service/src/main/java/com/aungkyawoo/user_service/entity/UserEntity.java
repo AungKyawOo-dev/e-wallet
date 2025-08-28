@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.Instant;
 
+/**
+ * User Entity
+ * Author : Aung Kyaw Oo
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -21,8 +25,10 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String fullName;
 
+    @Column(name = "phone_no", nullable = false)
     private String phoneNo;
 
     @Column(nullable = false)

@@ -14,14 +14,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
+/**
+ * User Service Implementation
+ * All the business logic will be handled here
+ * Author : Aung Kyaw Oo
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
+    // Injecting UserRepository
     private final UserRepository userRepository;
 
+    /**
+     * Create User
+     * @param userRequestDto UserRequestDto
+     * @return UserDto
+     */
     @Override
     public UserDto createUser(UserRequestDto userRequestDto) {
         UserEntity user = UserMapper.mapToUserEntity(userRequestDto);
@@ -34,12 +44,23 @@ public class UserServiceImpl implements IUserService {
         return UserMapper.mapToUserDto(user);
     }
 
+    /**
+     * Get User
+     * @param id Long
+     * @return UserDto
+     */
     @Override
     public UserDto getUser(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
         return UserMapper.mapToUserDto(user);
     }
 
+    /**
+     * Update User
+     * @param id Long
+     * @param userRequestDto UserRequestDto
+     * @return UserDto
+     */
     @Override
     public UserDto updateUser(Long id, UserRequestDto userRequestDto) {
         UserEntity user = userRepository.findByEmail(userRequestDto.getEmail()).orElseThrow(()
@@ -51,6 +72,10 @@ public class UserServiceImpl implements IUserService {
         return UserMapper.mapToUserDto(user);
     }
 
+    /**
+     * Delete User
+     * @param id Long
+     */
     @Override
     public void deleteUser(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));

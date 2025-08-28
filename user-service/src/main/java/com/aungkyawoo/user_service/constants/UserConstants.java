@@ -1,5 +1,9 @@
 package com.aungkyawoo.user_service.constants;
 
+/**
+ * User Constants
+ * Author : Aung Kyaw Oo
+ */
 public class UserConstants {
 
     public static final String STATUS_201 = "201";
