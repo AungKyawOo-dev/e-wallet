@@ -39,4 +39,14 @@ public class UserServiceImpl implements IUserService {
         UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
         return UserMapper.mapToUserDto(user);
     }
+
+    @Override
+    public UserDto updateUser(Long id, UserRequestDto userRequestDto) {
+        UserEntity user = userRepository.findByEmail(userRequestDto.getEmail()).orElseThrow(()
+                ->new ResourceNotFoundException("User", "Email", userRequestDto.getEmail()));
+        user.setFullName(userRequestDto.getFullName());
+        user.setPhoneNo(userRequestDto.getPhoneNo());
+        user = userRepository.save(user);
+        return UserMapper.mapToUserDto(user);
+    }
 }
