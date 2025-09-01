@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class WalletDto {
 
     private String userId;
-    private BigDecimal amount;
+    private BigDecimal balance;
     private String currency;
 
 }

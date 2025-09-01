@@ -4,10 +4,12 @@ import com.aungkyawoo.wallet_service.client.UserClient;
 import com.aungkyawoo.wallet_service.constants.TransactionType;
 import com.aungkyawoo.wallet_service.dto.WalletDto;
 import com.aungkyawoo.wallet_service.dto.request.DepositRequestDto;
+import com.aungkyawoo.wallet_service.dto.request.WithdrawRequestDto;
 import com.aungkyawoo.wallet_service.entity.Transactions;
 import com.aungkyawoo.wallet_service.entity.Wallet;
 import com.aungkyawoo.wallet_service.exception.DuplicateTransactionException;
-import com.aungkyawoo.wallet_service.exception.UserNotFoundException;
+import com.aungkyawoo.wallet_service.exception.InsufficientBalanceException;
+import com.aungkyawoo.wallet_service.exception.WalletNotFoundException;
 import com.aungkyawoo.wallet_service.exception.WalletAlreadyExistsException;
 import com.aungkyawoo.wallet_service.mapper.WalletMapper;
 import com.aungkyawoo.wallet_service.repository.TransactionRepository;
@@ -33,15 +35,18 @@ public class WalletServiceImpl implements IWalletService {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public WalletDto getWalletBalance(String userId) {
-        log.info("userId: {}", userId);
+    public WalletDto getWalletBalance(String userId, String currency) {
+        log.info("getWalletBalance with userId: {}, currency: {}", userId, currency);
         validateUser(userId);
-        Optional<Wallet> wallet = walletRepository.findByUserId(userId);
-        if(wallet.isEmpty()) {
-            return initializeWallet(userId);
-        }
+        Wallet wallet = walletRepository.findByUserId(userId).orElseGet(() ->
+                Wallet.builder()
+                        .userId(userId)
+                        .balance(BigDecimal.ZERO)
+                        .currency(currency)
+                        .build()
+        );
 
-        return WalletMapper.toWalletDto(wallet.get());
+        return WalletMapper.toWalletDto(wallet);
     }
 
     @Override
@@ -77,9 +82,6 @@ public class WalletServiceImpl implements IWalletService {
                         .build()
         );
 
-
-
-
         wallet.setBalance(wallet.getBalance().add(depositRequestDto.getAmount()));
         walletRepository.save(wallet);
 
@@ -96,9 +98,45 @@ public class WalletServiceImpl implements IWalletService {
         return WalletMapper.toWalletDto(wallet);
     }
 
+    @Transactional
+    @Override
+    public WalletDto widthdraw(WithdrawRequestDto withdrawRequestDto) {
+        validateUser(withdrawRequestDto.getUserId());
+
+        if (transactionRepository.existsByReference(withdrawRequestDto.getReference())) {
+            throw new DuplicateTransactionException("Transaction already processed: " + withdrawRequestDto.getReference());
+        }
+
+        Wallet wallet = walletRepository.findByUserIdAndCurrency(
+                withdrawRequestDto.getUserId(),
+                withdrawRequestDto.getCurrency()
+        ).orElseThrow(() -> new InsufficientBalanceException("Insufficient balance to withdraw: " + withdrawRequestDto.getAmount() + " " + withdrawRequestDto.getCurrency()));
+
+        if (wallet.getBalance().compareTo(withdrawRequestDto.getAmount()) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance to withdraw: " + withdrawRequestDto.getAmount() + " " + withdrawRequestDto.getCurrency());
+        }
+
+        wallet.setBalance(wallet.getBalance().subtract(withdrawRequestDto.getAmount()));
+        walletRepository.save(wallet);
+
+        Transactions transaction = Transactions.builder()
+                .fromUserId(withdrawRequestDto.getUserId())
+                .toUserId(withdrawRequestDto.getUserId())
+                .amount(withdrawRequestDto.getAmount())
+                .currency(withdrawRequestDto.getCurrency())
+                .type(TransactionType.WITHDRAW)
+                .reference(withdrawRequestDto.getReference())
+                .build();
+        transactionRepository.save(transaction);
+
+        // TODO: invoke external service for withdraw
+        // TODO: send notification
+        return WalletMapper.toWalletDto(wallet);
+    }
+
     private void validateUser(String userId) {
         if (!userClient.checkUserExists(userId)) {
-            throw new UserNotFoundException("User not found: " + userId);
+            throw new WalletNotFoundException("User not found: " + userId);
         }
     }
 }

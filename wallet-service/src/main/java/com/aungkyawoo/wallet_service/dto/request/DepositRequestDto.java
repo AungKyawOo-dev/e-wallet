@@ -1,5 +1,7 @@
 package com.aungkyawoo.wallet_service.dto.request;
 
+import com.aungkyawoo.wallet_service.constants.CurrencyConstants;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,5 +27,10 @@ public class DepositRequestDto {
     private String currency;
 
     private String reference;
+
+    @AssertTrue(message = "Unsupported currency")
+    public boolean isCurrencyValid() {
+        return CurrencyConstants.SUPPORTED_CURRENCIES.contains(currency);
+    }
 
 }

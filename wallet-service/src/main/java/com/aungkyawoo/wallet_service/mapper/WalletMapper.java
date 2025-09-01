@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class WalletMapper {
 
     public static WalletDto toWalletDto(com.aungkyawoo.wallet_service.entity.Wallet wallet) {
-        return WalletDto.builder().userId(wallet.getUserId()).amount(wallet.getBalance()).currency(wallet.getCurrency()).build();
+        return WalletDto.builder().userId(wallet.getUserId()).balance(wallet.getBalance()).currency(wallet.getCurrency()).build();
     }
 
 }
