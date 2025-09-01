@@ -1,5 +1,6 @@
 package com.aungkyawoo.user_service.service.impl;
 
+import com.aungkyawoo.user_service.client.WalletClient;
 import com.aungkyawoo.user_service.dto.UserDto;
 import com.aungkyawoo.user_service.dto.request.UserRequestDto;
 import com.aungkyawoo.user_service.entity.UserEntity;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * User Service Implementation
@@ -26,6 +28,8 @@ public class UserServiceImpl implements IUserService {
 
     // Injecting UserRepository
     private final UserRepository userRepository;
+
+    private final WalletClient walletClient;
 
     /**
      * Create User
@@ -41,6 +45,7 @@ public class UserServiceImpl implements IUserService {
         }
         user = userRepository.save(user);
         log.info("User created with id: {}", user.getId());
+        walletClient.initWallet(user.getId());
         return UserMapper.mapToUserDto(user);
     }
 
@@ -50,8 +55,8 @@ public class UserServiceImpl implements IUserService {
      * @return UserDto
      */
     @Override
-    public UserDto getUser(Long id) {
-        UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
+    public UserDto getUser(String id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", id));
         return UserMapper.mapToUserDto(user);
     }
 
@@ -62,7 +67,7 @@ public class UserServiceImpl implements IUserService {
      * @return UserDto
      */
     @Override
-    public UserDto updateUser(Long id, UserRequestDto userRequestDto) {
+    public UserDto updateUser(String id, UserRequestDto userRequestDto) {
         UserEntity user = userRepository.findByEmail(userRequestDto.getEmail()).orElseThrow(()
                 ->new ResourceNotFoundException("User", "Email", userRequestDto.getEmail()));
         user.setFullName(userRequestDto.getFullName());
@@ -77,7 +82,7 @@ public class UserServiceImpl implements IUserService {
      * @param id Long
      */
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         UserEntity user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
         userRepository.delete(user);
         log.info("User deleted with id: {}", id);

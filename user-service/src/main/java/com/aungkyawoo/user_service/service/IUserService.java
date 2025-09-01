@@ -4,6 +4,8 @@ import com.aungkyawoo.user_service.dto.UserDto;
 import com.aungkyawoo.user_service.dto.request.UserRequestDto;
 import jakarta.validation.Valid;
 
+import java.util.UUID;
+
 /**
  * IUserService interface
  * All the business logic will be here
@@ -12,9 +14,9 @@ import jakarta.validation.Valid;
 public interface IUserService {
     UserDto createUser(UserRequestDto userRequestDto);
 
-    UserDto getUser(Long id);
+    UserDto getUser(String id);
 
-    UserDto updateUser(Long id, @Valid UserRequestDto userRequestDto);
+    UserDto updateUser(String id, @Valid UserRequestDto userRequestDto);
 
-    void deleteUser(Long id);
+    void deleteUser(String id);
 }

@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 /**
  * User Controller
  * Author : Aung Kyaw Oo
@@ -47,7 +45,7 @@ public class UserController {
      * @return responseDto
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getUser(@PathVariable String id) {
+    public ResponseEntity<ResponseDto> getUser(@PathVariable Long id) {
         log.info("Getting user with id: {}", id);
         UserDto userDto = userService.getUser(id);
         return ResponseEntity.ok(new ResponseDto(UserConstants.STATUS_200, UserConstants.MESSAGE_200, userDto));
@@ -60,7 +58,7 @@ public class UserController {
      * @return responseDto
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto> updateUser(@PathVariable String id, @Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<ResponseDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDto userRequestDto) {
         log.info("Updating user with id: {}", id);
         UserDto userDto = userService.updateUser(id, userRequestDto);
         return ResponseEntity.ok(new ResponseDto(UserConstants.STATUS_200, UserConstants.MESSAGE_200, userDto));
@@ -72,7 +70,7 @@ public class UserController {
      * @return responseDto
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDto> deleteUser(@PathVariable String id) {
+    public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
         log.info("Deleting user with id: {}", id);
         userService.deleteUser(id);
         return ResponseEntity.ok(new ResponseDto(UserConstants.STATUS_200, UserConstants.MESSAGE_200, null));

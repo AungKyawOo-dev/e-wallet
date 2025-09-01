@@ -1,8 +1,8 @@
-CREATE TABLE users_profile (
-  id BIGINT PRIMARY KEY,               -- matches Auth userId
+CREATE TABLE users (
+  id CHAR(36) PRIMARY KEY,               -- matches Auth userId
   email VARCHAR(255) UNIQUE NOT NULL,
   full_name VARCHAR(255),
-  phone VARCHAR(64),
+  phone_no VARCHAR(64),
   kyc_level VARCHAR(32) DEFAULT 'BASIC',  -- BASIC, VERIFIED, REJECTED
   status VARCHAR(32) DEFAULT 'ACTIVE',    -- ACTIVE, SUSPENDED
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

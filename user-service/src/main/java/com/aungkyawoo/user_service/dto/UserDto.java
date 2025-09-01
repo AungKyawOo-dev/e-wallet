@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.UUID;
+
 /**
  * User Dto
  * Author : Aung Kyaw Oo
@@ -15,7 +17,7 @@ import lombok.ToString;
 @ToString
 public class UserDto {
 
-    private Long id;
+    private String id;
 
     private String email;
 

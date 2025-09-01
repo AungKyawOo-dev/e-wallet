@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * User Entity
@@ -19,8 +20,8 @@ import java.time.Instant;
 public class UserEntity extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Same as Auth userId
+    @Column(nullable = false, unique = true)
+    private String id = UUID.randomUUID().toString();
 
     @Column(nullable = false, unique = true)
     private String email;
