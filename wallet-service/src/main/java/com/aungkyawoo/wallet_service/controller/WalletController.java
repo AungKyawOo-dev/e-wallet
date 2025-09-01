@@ -2,16 +2,15 @@ package com.aungkyawoo.wallet_service.controller;
 
 import com.aungkyawoo.wallet_service.constants.WalletConstants;
 import com.aungkyawoo.wallet_service.dto.WalletDto;
+import com.aungkyawoo.wallet_service.dto.request.DepositRequestDto;
 import com.aungkyawoo.wallet_service.dto.response.ResponseDto;
 import com.aungkyawoo.wallet_service.service.IWalletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -22,18 +21,24 @@ public class WalletController {
     private final IWalletService walletService;
 
     @PostMapping("/{userId}/init")
-    public ResponseEntity<ResponseDto> initWallet(@PathVariable Long userId) {
+    public ResponseEntity<ResponseDto> initWallet(@PathVariable String userId, @RequestParam String currency) {
         log.info("wallet innit with userId: {}", userId);
         WalletDto walletDto = walletService.initializeWallet(userId);
-        return ResponseEntity.ok(new ResponseDto(WalletConstants.STATUS_200, WalletConstants.MESSAGE_200, walletDto));
+        return ResponseEntity.ok(new ResponseDto(WalletConstants.STATUS_201, WalletConstants.MESSAGE_201, walletDto));
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ResponseDto> getWalletBalance(@PathVariable Long userId) {
+    public ResponseEntity<ResponseDto> getWalletBalance(@PathVariable String userId, @RequestParam String currency) {
         log.info("userId: {}", userId);
         WalletDto walletDto = walletService.getWalletBalance(userId);
         return ResponseEntity.ok(new ResponseDto(WalletConstants.STATUS_200, WalletConstants.MESSAGE_200, walletDto));
+    }
 
+    @PostMapping("/deposit")
+    public ResponseEntity<ResponseDto> deposit(@RequestBody @Valid DepositRequestDto depositRequestDto) {
+        log.info("deposit with userId: {}", depositRequestDto.getUserId());
+        WalletDto walletDto = walletService.deposit(depositRequestDto);
+        return ResponseEntity.ok(new ResponseDto(WalletConstants.STATUS_200, WalletConstants.MESSAGE_200, walletDto));
     }
 
 }

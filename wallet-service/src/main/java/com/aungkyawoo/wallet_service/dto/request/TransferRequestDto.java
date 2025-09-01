@@ -13,8 +13,9 @@ import java.math.BigDecimal;
 @ToString
 public class TransferRequestDto {
 
-    private Long fromUserId;
-    private Long toUserId;
+    private String fromUserId;
+    private String toUserId;
     private BigDecimal amount;
+    private String currency;
     private String reference;
 }

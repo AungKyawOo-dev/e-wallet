@@ -1,5 +1,7 @@
 package com.aungkyawoo.wallet_service.dto.request;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +15,15 @@ import java.math.BigDecimal;
 @ToString
 public class DepositRequestDto {
 
-    private Long userId;
+    @NotNull(message = "User ID cannot be null")
+    private String userId;
+
+    @NotNull(message = "Amount cannot be null")
+    @DecimalMin(value = "0.01", message = "Deposit amount must be greater than zero")
     private BigDecimal amount;
+
+    private String currency;
+
     private String reference;
 
 }

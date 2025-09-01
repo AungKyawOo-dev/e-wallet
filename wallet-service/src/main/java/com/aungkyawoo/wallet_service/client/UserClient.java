@@ -14,8 +14,8 @@ public class UserClient {
 
     private final RestTemplate restTemplate;
 
-    public boolean checkUserExists(Long userId) {
-        String url = ClientConstants.USER_CLIENT_GET_USER_BY_ID.replace("{id}", String.valueOf(userId));
+    public boolean checkUserExists(String userId) {
+        String url = ClientConstants.USER_CLIENT_GET_USER_BY_ID.replace("{id}", userId);
         log.info("url: {}", url);
         try {
             ResponseDto responseDto = restTemplate.getForObject(url, ResponseDto.class);

@@ -13,8 +13,9 @@ import java.math.BigDecimal;
 @ToString
 public class WithdrawRequestDto {
 
-    private Long userId;
+    private String userId;
     private BigDecimal amount;
+    private String currency;
     private String reference;
 
 }

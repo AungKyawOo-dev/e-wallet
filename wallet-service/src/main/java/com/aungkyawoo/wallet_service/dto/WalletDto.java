@@ -13,7 +13,8 @@ import java.math.BigDecimal;
 @Builder
 public class WalletDto {
 
-    private Long userId;
+    private String userId;
     private BigDecimal amount;
+    private String currency;
 
 }
